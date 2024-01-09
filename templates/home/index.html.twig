@@ -1,41 +1,25 @@
-{# extends the base layout #}
 {% extends 'base.html.twig' %}
 
-{# set the title of the page #}
-{% block title %}Accueil
-{% endblock %}
+{% block title %}Accueil{% endblock %}
 
 {% block body %}
-
-	{# Header section #}
-	<header>
-		<nav>
-			<ul>
-				<li>menu #1</li>
-				<li>menu #2</li>
-			</ul>
-		</nav>
-	</header>
-
-	{# Main content section #}
-	<main>
-		<div class="container">
-			<h1>Bienvenue sur notre site !</h1>
-			<p>Contenu principal de la page...</p>
-		</div>
-	</main>
-
-	{# Footer section #}
-	<footer>
-		<p>© 2023 CHATTECH. Tous droits réservés.</p>
-	</footer>
+<div class="d-flex flex-column vh-100 justify-content-between" style="background-color: #242426;">
+    <main class="flex-grow-1 d-flex justify-content-center align-items-center">
+        <div class="container text-center text-light p-5 my-5" style="background-color: #242426; border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.5);">
+           <img src="{{ asset('assets/ChatTech.png') }}" alt="Logo ChatTech" style="max-width: 200px; height: auto; margin-bottom: 20px;">
+            <h1 class="text-primary mb-4">Bienvenue sur notre site !</h1>
+            <p class="lead">Découvrez un nouveau moyen de rester connecté avec vos amis.</p>
+            <a class="btn btn-primary" href="{{ path('app_register') }}">Rejoignez-nous dès maintenant</a>
+        </div>
+    </main>
+</div>
 
 {% endblock %}
 
 {% block stylesheets %}
-	<!-- Custom CSS -->
+{{ parent() }}
 {% endblock %}
 
 {% block javascripts %}
-	<!-- Custom JavaScript -->
+{{ parent() }}
 {% endblock %}

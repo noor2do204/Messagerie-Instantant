@@ -7,6 +7,9 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -40,6 +43,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\ManyToOne(inversedBy: 'user')]
     private ?Message $message = null;
+
+    #[ORM\ManyToMany(targetEntity: Conversation::class, mappedBy: 'users')]
+    private Collection $conversations;
+
+    #[ORM\OneToMany(mappedBy: 'userOne', targetEntity: Friendship::class)]
+    private Collection $friendshipsInitiated;
+
+    #[ORM\OneToMany(mappedBy: 'userTwo', targetEntity: Friendship::class)]
+    private Collection $friendshipsReceived;
+
+    public function __construct()
+    {
+        $this->conversations = new ArrayCollection();
+        $this->friendshipsInitiated = new ArrayCollection();
+        $this->friendshipsReceived = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -157,5 +176,45 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->message = $message;
 
         return $this;
+    }
+    public function getConversations(): Collection
+    {
+        return $this->conversations;
+    }
+
+    public function addConversation(Conversation $conversation): self
+    {
+        if (!$this->conversations->contains($conversation)) {
+            $this->conversations[] = $conversation;
+            $conversation->addUser($this); 
+        }
+
+        return $this;
+    }
+
+    public function removeConversation(Conversation $conversation): self
+    {
+        if ($this->conversations->removeElement($conversation)) {
+            $conversation->removeUser($this); 
+        }
+
+        return $this;
+    }
+    public function getFriendshipsInitiated(): Collection
+    {
+        return $this->friendshipsInitiated;
+    }
+
+    public function getFriendshipsReceived(): Collection
+    {
+        return $this->friendshipsReceived;
+    }
+
+    public function getAllFriendships(): Collection
+    {
+        return new ArrayCollection(array_merge(
+            $this->friendshipsInitiated->toArray(),
+            $this->friendshipsReceived->toArray()
+        ));
     }
 }

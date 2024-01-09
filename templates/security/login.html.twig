@@ -1,31 +1,122 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Connexion{% endblock %}
 
 {% block body %}
-<form method="post">
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
+<div class="login-container">
+    <div class="login-brand">
+        <img src="/img/ChatTech.png" alt="ChatTech Logo">
+    </div>
+    
+    <div class="login-form">
+        {% if error %}
+            <div class="alert alert-danger">Erreur : {{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
 
-    {% if app.user %}
-        <div class="mb-3">
-            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
-        </div>
-    {% endif %}
+        {% if app.user %}
+            <div class="mb-3">
+                Vous êtes connecté en tant que {{ app.user.username }}, <a href="{{ path('app_logout') }}">Déconnexion</a>
+            </div>
+        {% endif %}
 
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputEmail">Email</label>
-    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
-    <label for="inputPassword">Password</label>
-    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+        <form method="post">
+            <h2 class="text-center">Connectez-vous avec votre adresse e-mail</h2>
+            
+            <div class="form-group">
+                <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Adresse e-mail" required autofocus>
+            </div>
+            <div class="form-group">
+                <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Mot de passe" required>
+            </div>
+            
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+            
+            <button class="btn btn-login" type="submit">Se connecter</button>
+            <button class="btn btn-secondary" type="button" onclick="window.location.href='{{ path('app_register') }}';">Créer un compte</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
 
-    <input type="hidden" name="_csrf_token"
-           value="{{ csrf_token('authenticate') }}"
-    >
-
-    <button class="btn btn-lg btn-primary" type="submit">
-        Sign in
-    </button>
-</form>
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            background-color: #121212;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: white;
+        }
+        .login-container {
+            margin-top: 5vh; 
+            margin-bottom: 5vh; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center; 
+            height: 90vh; 
+        }
+        .login-brand {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .login-brand img {
+            max-width: 200px;
+            height: auto;
+        }
+        .login-form {
+            max-width: 320px;
+            margin: auto;
+            padding: 2rem;
+            background-color: #333;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .login-form h2 {
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+            color: #8a8a8a;
+        }
+        .login-form .form-control {
+            background-color: #222;
+            border: none;
+            margin-bottom: 1rem;
+            height: 40px;
+            color: white;
+            border-radius: 4px;
+            padding: 8px;
+        }
+        .login-form .btn-login, .login-form .btn-secondary {
+            width: 100%;
+            border: none;
+            padding: 10px;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .login-form .btn-login {
+            background-color: #0b93f6;
+        }
+        .login-form .btn-secondary {
+            background-color: #4a4a4a;
+        }
+        .login-form .forgot-password {
+            display: block;
+            text-align: center;
+            margin-top: 2rem;
+            color: #8a8a8a;
+            text-decoration: none;
+        }
+        .login-form .forgot-password:hover {
+            text-decoration: underline;
+        }
+        .alert {
+            background-color: #f44336;
+            color: white;
+            padding: 10px;
+            margin-bottom: 1rem;
+            border: none;
+            border-radius: 4px;
+        }
+    </style>
 {% endblock %}

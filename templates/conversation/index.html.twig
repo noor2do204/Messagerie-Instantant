@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Discussions{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center mb-5">
+        <div class="col text-center">
+            <h1 class="text-white">Discussions</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Colonne de gauche : Liste des conversations -->
+        <div class="col-md-4 d-flex flex-column align-items-center">
+            <div class="mb-3 w-100 text-center">
+                <a href="{{ path('app_conversation_new') }}" class="btn btn-primary w-100 p-3">Créer une nouvelle conversation</a>
+            </div>
+            <!-- Liste des conversations avec scroll -->
+            <div class="w-100" style="height: 500px; overflow-y: auto;">
+                <ul class="list-group w-100">
+                    {% for conversation in conversations %}
+                        <li class="list-group-item bg-dark text-white text-center">
+                            <a href="{{ path('app_conversation_show', {'id': conversation.id}) }}" class="text-white">
+                                {{ conversation.name }}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="list-group-item bg-dark text-white text-center border-white">Aucune conversation trouvée</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Colonne de droite : Contenu de la conversation sélectionnée -->
+        <div class="col-md-8 d-flex justify-content-center align-items-center" style="height: 500px;">
+            <div class="text-white text-center">
+                <p>Sélectionnez une conversation pour voir les messages.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

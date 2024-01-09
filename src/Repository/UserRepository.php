@@ -40,28 +40,26 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
-//    /**
-//     * @return User[] Returns an array of User objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('u')
-//            ->andWhere('u.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('u.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function findBySearchQuery(string $query): array
+    {
+        $qb = $this->createQueryBuilder('u');
+        $qb->where('u.name LIKE :query')
+            ->setParameter('query', '%' . $query . '%');
 
-//    public function findOneBySomeField($value): ?User
-//    {
-//        return $this->createQueryBuilder('u')
-//            ->andWhere('u.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findFriendsOfUser(User $user): array
+    {
+        $qb = $this->createQueryBuilder('u');
+        $qb->leftJoin('u.friendshipsInitiated', 'fi')
+            ->leftJoin('u.friendshipsReceived', 'fr')
+            ->where('fi.userTwo = :user OR fr.userOne = :user')
+            ->andWhere('fi.status = :status OR fr.status = :status')
+            ->setParameter('user', $user)
+            ->setParameter('status', 'accepted')
+            ->distinct();
+
+        return $qb->getQuery()->getResult();
+    }
 }

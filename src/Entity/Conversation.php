@@ -15,7 +15,7 @@ class Conversation
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50, nullable: true)]
     private ?string $name = null;
 
     #[ORM\Column(length: 50)]
@@ -24,8 +24,13 @@ class Conversation
     #[ORM\OneToMany(mappedBy: 'conversation', targetEntity: Message::class)]
     private Collection $messages;
 
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'conversations')]
+    #[ORM\JoinTable(name: 'user_conversation')]
+    private Collection $users;
+
     public function __construct()
     {
+        $this->users = new ArrayCollection();
         $this->messages = new ArrayCollection();
     }
 
@@ -83,6 +88,30 @@ class Conversation
             if ($message->getConversation() === $this) {
                 $message->setConversation(null);
             }
+        }
+
+        return $this;
+    }
+
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users[] = $user;
+            $user->addConversation($this); 
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->removeElement($user)) {
+            $user->removeConversation($this);
         }
 
         return $this;

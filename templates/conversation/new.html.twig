@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Conversation{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+    <div class="row justify-content-center mb-5">
+        <div class="col text-center">
+            <h1 class="text-white">Crée une nouvelle discussion</h1>
+        </div>
+    </div>
+
+        {{ include('conversation/_form.html.twig') }}
+
+        <a href="{{ path('app_conversation_index') }}" class="btn btn-primary mt-3">Retour aux discussions</a>
+    </div>
+{% endblock %}

@@ -1,0 +1,23 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>New Message</title>
+</head>
+<body>
+    <h1>{{ message }}</h1>
+    <div id="messages"></div>
+    <script type="text/javascript">
+        const url = new URL('http://localhost:3000/.well-known/mercure');
+        url.searchParams.append('topic', 'http://localhost/messages');
+
+        const eventSource = new EventSource(url);
+        eventSource.onmessage = event => {
+            const data = JSON.parse(event.data);
+            const messageElement = document.createElement("div");
+            messageElement.textContent = data.message;
+            document.getElementById('messages').appendChild(messageElement);
+        };
+    </script>
+</body>
+</html>
