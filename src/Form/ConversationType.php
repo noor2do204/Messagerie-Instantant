@@ -13,14 +13,16 @@ class ConversationType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options): void {
         $builder
             ->add('name')
-            ->add('type');
-                /*->add('users', EntityType::class, [
-                    'class' => User::class,
-                    'choices' => $options['friends'],
-                    'choice_label' => 'name',
-                    'multiple' => false,
-                    'expanded' => false,
-                ]);*/
+            ->add('type')
+            ->add('users', EntityType::class, [
+            'class' => User::class,
+            'choices' => $options['friends'],
+            'choice_label' => function (User $user) {
+                return $user->getName(); 
+            },
+            'multiple' => true, 
+            'expanded' => false, 
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void {

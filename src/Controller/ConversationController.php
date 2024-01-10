@@ -30,13 +30,9 @@ class ConversationController extends AbstractController
     #[Route('/new', name: 'app_conversation_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository): Response {
         $currentUser = $this->getUser();
-
-        // Supposons que vous avez une méthode dans UserRepository qui renvoie les amis de l'utilisateur
         $friends = $userRepository->findFriendsOfUser($currentUser);
-
         $conversation = new Conversation();
         $conversation->setType('private');
-
         $form = $this->createForm(ConversationType::class, $conversation, [
             'friends' => $friends,
         ]);
